@@ -1,24 +1,34 @@
-import React from 'react'
-import { Route, Routes } from 'react-router-dom'
-import About from './pages/About'
-import Product from './pages/Product'
-import Contact from './pages/Contact'
-import Home from './pages/Home'
-import Header from './components/Header'
-import Services from './pages/Services'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import Card from './components/Card';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import Services from './pages/Services';
+import NotFound from './pages/NotFound';
 
 const App = () => {
+
+  const [data, setData] = useState([]);
+
+  const getData = async () => {
+    const response=await axios.get('https://picsum.photos/v2/list');
+    setData(response.data);
+  }
+
+  useEffect(() => {
+    getData();
+  }, [])
+  
+
   return (
-    <div>
-      <Header />
-      <Routes>
-        <Route path='/about' element={<About />} />
-        <Route path='/product' element={<Product />} />
-        <Route path='/contact' element={<Contact />} />
-        <Route path='/services' element={<Services />} />
-        <Route path='/' element={<Home />} />  
-      </Routes>
-    </div>
+    <Router>
+      <div className='p-10'>
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route path="/services" component={Services} />
+          <Route component={NotFound} />
+        </Switch>
+      </div>
+    </Router>
   )
 }
 
